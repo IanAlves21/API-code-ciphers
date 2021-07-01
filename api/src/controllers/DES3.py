@@ -52,6 +52,34 @@ class DES3:
 
         return json({"success": True, 'decrypted_message': decrypted_message})
 
+    async def encryptFileData(self, plain_text, key, key_size):
+        if key_size == 64:
+            key = key.ljust(8, " ")[:8]
+        elif key_size == 128:
+            key = key.ljust(16, " ")[:16]
+        elif key_size == 192:
+            key = key.ljust(24, " ")[:24]
+        else:
+            return False
+
+        encrypted_message = self.criptografia3DES(plain_text, key, key_size)
+
+        return encrypted_message
+
+    async def decryptFileData(self, encrypted_message, key, key_size):
+        if key_size == 64:
+            key = key.ljust(8, " ")[:8]
+        elif key_size == 128:
+            key = key.ljust(16, " ")[:16]
+        elif key_size == 192:
+            key = key.ljust(24, " ")[:24]
+        else:
+            return False
+
+        decrypted_message = self.decriptografia3DES(encrypted_message, key, key_size)
+
+        return decrypted_message
+
     def encrypt_3DES(self, plain_text, chave, tamanho):
 
         tamanho_chave = tamanho // 64

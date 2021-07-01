@@ -32,6 +32,16 @@ class DES:
 
         return json({"success": True, 'decrypted_message': decrypted_message})
 
+    async def encryptFileData(self, plain_text, key):
+        encrypted_message = self.criptografiaDES(plain_text, key)
+
+        return encrypted_message
+
+    async def decryptFileData(self, encrypted_message, key):
+        decrypted_message = self.decriptografiaDES(encrypted_message, key)
+
+        return decrypted_message
+
     def encrypt_DES(self, plain_text, chave):
 
         plain_text_bin = ""
