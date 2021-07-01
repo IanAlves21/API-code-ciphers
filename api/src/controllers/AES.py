@@ -13,26 +13,29 @@ import numpy as np
 
 class AES:
     async def encrypt(self, request: Request):
-        # # INPUT para texto claro
-        plain_text = "TesteCriptografia para passar na matéria de criptografia"
+        arguments = request.json
+        key_size = 128
+        
+        plain_text = arguments["message"]
+        key = arguments["key"]
 
+        encrypted_message = self.criptografiaAES(plain_text, key, key_size)
 
-        # INPUT para O TAMANHO
-        tamanho_chave = 128
+        return json({"success": True, 'encrypted_message': encrypted_message})
 
+    async def decrypt(self, request: Request):
+        arguments = request.json
+        key_size = 128
+        
+        encrypted_message = arguments["message"]
+        key = arguments["key"]
 
-        # INPUT para chave
-        chave = "chave12345678910chave12345678910"
-        # chave = "chave124"
-        cifra = self.criptografiaAES(plain_text, chave, tamanho_chave)
+        decrypted_message = self.decriptografiaAES(encrypted_message, key, key_size)
 
-        decifrado = self.decriptografiaAES("\r³´£_û\u000b'îY¢¶^ko¿à¾Õð'G\"ì÷%ºÎý;·qP°P÷¿<¯¹òüÜ*Ï", chave, tamanho_chave)
-        print("cifra ----------------------------------------------> " + cifra)
-        print("aquiiiiii -------------------------------------------------> " + decifrado)
-
-        return json({'message': cifra})
+        return json({"success": True, 'decrypted_message': decrypted_message})
 
     def encrypt_AES(self, plain_text, chave, tamanho = 128):
+
         # DICIONARIOS DE RODADAS PARA CADA TAMANHO INCIAIS
         n_rodada_dic = {128: 10, 192: 12, 256: 14}
         rodada_final_dic = {128: 40, 192: 48, 256: 56}
@@ -51,7 +54,7 @@ class AES:
         lista_chaves = self.gerar_chaves_geral(chave, tamanho)
 
         # =============================================CRIPTOGFAFIA=============================================
-        # AddRoundKey Inicial
+        # self.AddRoundKey Inicial
         temp_texto = self.AddRoundKey(plain_text_bin, lista_chaves[0:4])
 
         # print(temp_texto)
@@ -66,7 +69,7 @@ class AES:
             #ShiftRows
             temp_texto = self.ShiftRow(temp_texto, False)
 
-            #MixColumns
+            #self.MixColumns
             temp_texto = self.MixColumns(temp_texto, False)
 
             # Chave da rodada
@@ -91,27 +94,30 @@ class AES:
 
         # Conversão de binário para hexadecimal
         output_bin = str(hex(int(''.join(cifra), 2))).upper()[2:].zfill(32)
-        #Conversão hexadecimal para ascii
+        # #Conversão hexadecimal para ascii
+        # cifra_ascii = ""
+        # for i in range(len(output_bin)//2):
+        #     cifra_ascii = cifra_ascii + chr(int(output_bin[i*2:(i+1)*2],16))
 
-        cifra_ascii = ""
+        return output_bin
 
-        for i in range(len(output_bin)//2):
-            cifra_ascii = cifra_ascii + chr(int(output_bin[i*2:(i+1)*2],16))
 
-        return cifra_ascii
-
+    # Decryptação, É a mesma coisa que a encriptação, só que as chaves são aplicadas ao contrário==========================================================
     def decrypt_AES(self, cifra, chave, tamanho = 128):
+
         # DICIONARIO DE RODADAS PARA CADA TAMANHO
         n_rodada_dic = {128: 10, 192: 12, 256: 14}
         rodada_final_dic = {128: 40, 192: 48, 256: 56}
 
         # CONVERTE CIFRA EM BINARIO
         plain_cifra_bin = ""
-        temp = ""
-        for i in cifra: #Converte string ascii em Hex
-            temp = temp + str(hex(ord(i)))[2:].zfill(2)
+        # temp = ""
+        # for i in cifra: #Converte string ascii em Hex
+        #     temp = temp + str(hex(ord(i)))[2:].zfill(2)
+        # for i in temp: # Transforma Hex em string de binario equivalente
+        #     plain_cifra_bin = plain_cifra_bin + str(format(int(i, 16), '04b'))
 
-        for i in temp: # Transforma Hex em string de binario equivalente
+        for i in cifra: # Transforma Hex em string de binario equivalente
             plain_cifra_bin = plain_cifra_bin + str(format(int(i, 16), '04b'))
 
         # GERAR CHAVES
@@ -120,7 +126,7 @@ class AES:
 
         #=============================================DECRIPTOGFAFIA==================================================
 
-        # AddRoundKey Inicial
+        # self.AddRoundKey Inicial
         temp_cifra = self.AddRoundKey(''.join(plain_cifra_bin), lista_chaves[rodada_final_dic[tamanho]: rodada_final_dic[tamanho] + 4])
 
         # print(temp_cifra)
@@ -137,7 +143,7 @@ class AES:
             # Chave da rodada
             temp_cifra = self.AddRoundKey(''.join(temp_cifra), lista_chaves[(rodada)*4: (rodada+1)*4]) #Texto unificado e chave
 
-            #MixColumns
+            #self.MixColumns
             temp_cifra = self.MixColumns(temp_cifra, True)
             
         # Rodada 10
@@ -164,6 +170,10 @@ class AES:
 
         return decifra_ascii
 
+
+    # CAIXAS_S, de acordo com o valor hexadecimal de entrada, existe uma saída equivalente=================================================================
+    # invertido True = Caixa Invertido, invertido False = self.CaixaS normal
+    # ENTRADA = 4 byte, SAÍDA = 4 byte
     def CaixaS (self, word, invertido = False): 
         caixa_s =[   [0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76],
                     [0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0],
@@ -226,12 +236,15 @@ class AES:
 
         return ''.join(temp_text)
 
+
+    # RCon, numero que muda de acordo com a rodada, usado dentro do gerador de chaves=====================================================================
+    # Entra numero da rodada, retorna 4 bytes
     def Rcon(self, rodada):
         # 30 rodadas possíveis
         R_con = [   0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 
                     0x9a, 0x2F, 0x5E, 0xBC, 0x63, 0xC6, 0x97, 0x35, 0x6A, 0xD4, 0xB3, 0x7D, 0xFA, 0xEF, 0xC5]
 
-        #Rcon retorna o numero da tabela como o primeiro byte e 0 nos 3 bytes seguintes
+        #self.Rcon retorna o numero da tabela como o primeiro byte e 0 nos 3 bytes seguintes
         #Ljust preenche até que tenha 10 digitos e [2:] remove o 0x
         temp = hex(R_con[rodada-1]).ljust(10, "0")[2:]
 
@@ -300,6 +313,7 @@ class AES:
 
         return temp1
 
+    # ENTRADA 2 HEX, SAIDA = STRING de BITS
     def byte_mul(self, a, b):
         p = 0
         for c in range(8):
@@ -318,7 +332,7 @@ class AES:
 
     #Entrada = Texto claro divido em 4 words, saida: 4 words
     # Faz uma multiplicação de matrizes, no entanto:
-    # Ao invés de multiplicar, usa-se byte_mul
+    # Ao invés de multiplicar, usa-se self.byte_mul
     # Ao invés de somar, usa-se XOR
     # Inverso ou não muda apenas a matriz padrão
     def MixColumns(self, texto, inverso = False):
@@ -340,7 +354,7 @@ class AES:
             temp.append(str(hex(int(texto[i: 8+i], 2))).upper()[2:].zfill(2))
         matriz = np.transpose(np.reshape(temp, (-1, 4))).tolist()
 
-        # Multiplicação de matrizes, só que com func de xor ao invés de soma e byte_mul ao invés de multiplicação
+        # Multiplicação de matrizes, só que com func de xor ao invés de soma e self.byte_mul ao invés de multiplicação
         temp_xor = "00000000"
         for i in range(4):
             for j in range(4):
@@ -360,6 +374,7 @@ class AES:
             temp1.append(c[i: 32+i])
 
         return temp1
+
 
     # Gera uma lista de chaves a partir do binario
     # Entrada: Chave de 16,24,32 bytes = 128, 192, 256 bits
@@ -406,6 +421,7 @@ class AES:
 
         return lista_chaves
 
+
     # Função principal para criptografar texto e chave
     def criptografiaAES(self, plain_text, chave, tamanho):
         # Divide a string em blocos de 128bits
@@ -430,10 +446,8 @@ class AES:
 
     # Função principal para descriptografar texto e chave
     def decriptografiaAES(self, cifra, chave, tamanho): # Cifra = bloco de criptografados
-
         # Divide a string em blocos de 128bits
-        bloco = [cifra[i:i+16] for i in range(0, len(cifra), 16)]
-        bloco[-1] = bloco[-1].ljust(16)  #Adicionar preenchimento vazio no ultimo bloco, se precisar
+        bloco = [cifra[i:i+32] for i in range(0, len(cifra), 32)]
         
         # Garante que a chave tenha o numero minimo de caracteres ascii de acordo com o tamanho
         chave = chave.ljust(tamanho//8, ".")[:tamanho//8]
