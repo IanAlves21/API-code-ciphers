@@ -34,6 +34,20 @@ class AES:
 
         return json({"success": True, 'decrypted_message': decrypted_message})
 
+    async def encryptFileData(self, plain_text, key):
+        key_size = 128
+
+        encrypted_message = self.criptografiaAES(plain_text, key, key_size)
+
+        return encrypted_message
+
+    async def decryptFileData(self, encrypted_message, key):
+        key_size = 128
+
+        decrypted_message = self.decriptografiaAES(encrypted_message, key, key_size)
+
+        return decrypted_message
+
     def encrypt_AES(self, plain_text, chave, tamanho = 128):
 
         # DICIONARIOS DE RODADAS PARA CADA TAMANHO INCIAIS

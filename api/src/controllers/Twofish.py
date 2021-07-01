@@ -34,7 +34,18 @@ class Twofish:
 
         return json({"success": True, 'decrypted_message': decrypted_message})
 
-        # Encriptação blowfish ================================================================================================================================
+    async def encryptFileData(self, plain_text, key, key_size):
+        encrypted_message = self.criptografiaTwofish(plain_text, key, key_size)
+
+        return encrypted_message
+
+    async def decryptFileData(self, encrypted_message, key, key_size):
+        print(encrypted_message)
+        decrypted_message = self.decriptografiaTwofish(encrypted_message, key, key_size)
+
+        return decrypted_message
+    
+    # Encriptação blowfish ================================================================================================================================
     def encrypt_Twofish(self, plain_text, chave, tamanho = 128):
 
         lista_chaves = self.gerar_chaves(chave, tamanho)

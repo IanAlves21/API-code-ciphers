@@ -32,6 +32,17 @@ class Blowfish:
 
         return json({"success": True, 'decrypted_message': decrypted_message})
 
+    async def encryptFileData(self, plain_text, key, key_size):
+        encrypted_message = self.criptografiaBlowfish(plain_text, key)
+
+        return encrypted_message
+
+    async def decryptFileData(self, encrypted_message, key, key_size):
+        decrypted_message = self.decriptografiaBlowfish(encrypted_message, key)
+
+        return decrypted_message
+
+
     # Encriptação blowfish ================================================================================================================================
     def encrypt_Blowfish(self, plain_text, chave):
 
