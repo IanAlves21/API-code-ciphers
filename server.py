@@ -10,8 +10,8 @@ load_dotenv(dotenv_path=path_env)
 if __name__ == '__main__':
     # if os.environ['APP'] == 'production':
     app.run(
-        host="localhost",
-        port=int("8000"),
+        host="0.0.0.0",
+        port=int("5000"),
         debug=False,
         access_log=False,
         auto_reload=False,
