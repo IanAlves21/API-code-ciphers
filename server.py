@@ -14,7 +14,7 @@ if __name__ == '__main__':
         port=int(os.environ['PORT']),
         debug=False,
         access_log=False,
-        auto_reload=False,
+        auto_reload=True,
         workers=int("1")
     )
 

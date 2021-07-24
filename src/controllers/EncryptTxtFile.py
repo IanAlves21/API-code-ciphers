@@ -13,6 +13,7 @@ from .Twofish import Twofish
 # import jwt
 import numpy as np
 import os
+import re
 
 class EncryptTxtFile:
     async def encrypt(self, request: Request):
@@ -23,6 +24,8 @@ class EncryptTxtFile:
 
         file_path = await self.saveFile(request.files.get('file'))
         file_data = await self.readFileData(file_path)
+
+        file_data = re.sub(r'[^a-zA-Z\d\s]', u'', file_data)
 
         if(algorithm_type=="aes"):
             encrypted_message = await AES().encryptFileData(file_data, key)
@@ -88,7 +91,7 @@ class EncryptTxtFile:
     async def readFileData(self, file_path):
         data = ""
 
-        with open(file_path) as f:
+        with open(file_path, encoding="utf-8") as f:
             data = f.read()
 
         return data

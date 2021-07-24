@@ -4,3 +4,4 @@ secure==0.2.1
 pathlib
 python-dotenv==0.14.0
 numpy
+regex
