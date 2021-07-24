@@ -1,0 +1,7 @@
+sanic
+secure
+sanic_cors
+pathlib
+python-dotenv
+numpy
+# os-sys
