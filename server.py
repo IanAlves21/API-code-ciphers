@@ -1,4 +1,4 @@
-# from dotenv.main import load_dotenv
+from dotenv.main import load_dotenv
 from pathlib import Path
 from src.app import app
 
