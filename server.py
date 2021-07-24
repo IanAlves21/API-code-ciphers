@@ -5,7 +5,7 @@ from src.app import app
 import os
 
 path_env = Path('.') / '.env'
-# load_dotenv(dotenv_path=path_env)
+load_dotenv(dotenv_path=path_env)
 
 if __name__ == '__main__':
     # if os.environ['APP'] == 'production':
