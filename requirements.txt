@@ -1,5 +1,5 @@
 sanic
-secure
+# secure
 sanic_cors
 pathlib
 python-dotenv
