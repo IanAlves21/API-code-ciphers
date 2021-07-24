@@ -15,7 +15,7 @@ if __name__ == '__main__':
         debug=False,
         access_log=False,
         auto_reload=False,
-        workers=int("4")
+        workers=int("1")
     )
 
     # elif os.environ['APP'] == 'development':
