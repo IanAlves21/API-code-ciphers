@@ -4,5 +4,3 @@ sanic_cors
 pathlib
 python-dotenv
 numpy
-gunicorn
-# os-sys
