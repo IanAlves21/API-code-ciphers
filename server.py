@@ -11,7 +11,7 @@ if __name__ == '__main__':
     # if os.environ['APP'] == 'production':
     app.run(
         host="0.0.0.0",
-        port=int(os.environ['PORT']|"5000"),
+        port=int(os.environ['PORT']),
         debug=False,
         access_log=False,
         auto_reload=False,
